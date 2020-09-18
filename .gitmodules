@@ -1,0 +1,3 @@
+[submodule "bluemesh7"]
+	path = bluemesh7
+	url = https://github.com/ogoremeni/bluemesh7.git
