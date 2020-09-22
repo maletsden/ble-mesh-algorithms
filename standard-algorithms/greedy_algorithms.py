@@ -97,7 +97,6 @@ def has_path_to_node(current_node, start_node, end_node, adjacency_matrix, roles
     visited = [False] * len(adjacency_matrix)
     visited[start_node] = True
 
-
     queue = [start_node]
 
     while queue:
@@ -127,12 +126,12 @@ def has_path_to_nodes(current_node, start_node, end_nodes, adjacency_matrix, rol
 
 # --- Testing functions ---
 
-def show_graph_with_labels(adjacency_matrix, roles, positions, only_relays=False):
-    rows, cols = np.where(adjacency_matrix == 1)
+def show_graph_with_labels(adjacency, roles, positions, only_relays=False, save_to=None):
+    rows, cols = np.where(adjacency == 1)
     edges = list(zip(rows.tolist(), cols.tolist()))
     gr = nx.Graph()
 
-    nodes = range(adjacency_matrix.shape[0])
+    nodes = range(adjacency.shape[0])
     gr.add_nodes_from(nodes)
 
     pos = positions or nx.spring_layout(gr)
@@ -160,8 +159,10 @@ def show_graph_with_labels(adjacency_matrix, roles, positions, only_relays=False
         nx.draw_networkx_labels(gr, pos, {node: node for node in relays},
                                 font_size=14, font_color="white")
 
-    plt.show()
-
+    if save_to is not None:
+        plt.savefig(save_to)
+    else:
+        plt.show()
 
 def test_greedy_construct():
     roles = np.zeros((len(adjacency_matrix),), dtype='i8')
