@@ -20,13 +20,13 @@ def greedy_construct(adjacency_matrix, roles):
     node_mask = np.ones((n,), dtype='i8')
     dominated = set()
 
-    # index_with_big_degree = np.argmax(
-    #     np.sum(
-    #         adjacency_matrix * node_mask,
-    #         axis=1
-    #     )
-    # )
-    index_with_big_degree = 0
+    index_with_big_degree = np.argmax(
+        np.sum(
+            adjacency_matrix * node_mask,
+            axis=1
+        )
+    )
+    
     roles[index_with_big_degree] = 1
     neighbours_mask = adjacency_matrix[index_with_big_degree] == 1
     node_mask[neighbours_mask] = 0

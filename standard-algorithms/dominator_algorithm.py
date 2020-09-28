@@ -11,11 +11,7 @@ def dominator(adjacency_matrix):
 
 def dominator_construct(adjacency_matrix, roles):
     mask = np.zeros((len(adjacency_matrix),), dtype=np.uint8)
-    # add fist producing node
-    roles[0] = 1
-    mask[adjacency_matrix[0] == 1] = 1
-    mask[0] = 1
-
+    
     indexes = np.arange(1, len(roles))
     np.random.shuffle(indexes)
     for i in indexes:
