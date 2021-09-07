@@ -26,7 +26,7 @@ def greedy_construct(adjacency_matrix, roles):
             axis=1
         )
     )
-    
+
     roles[index_with_big_degree] = 1
     neighbours_mask = adjacency_matrix[index_with_big_degree] == 1
     node_mask[neighbours_mask] = 0
@@ -35,20 +35,22 @@ def greedy_construct(adjacency_matrix, roles):
     dominated.update(np.where(neighbours_mask)[0])
 
     for i in range(n - 1):
-        max_index, white_heighbours_indexes = argmax_dominated(dominated, adjacency_matrix, node_mask)
+        max_index, white_neighbours_indexes = argmax_dominated(dominated, adjacency_matrix, node_mask)
 
-        if (max_index == -1): break
+        if max_index == -1:
+            break
 
         roles[max_index] = 1
-        node_mask[white_heighbours_indexes] = 0
+        node_mask[white_neighbours_indexes] = 0
         node_mask[max_index] = 0
-        dominated.update(white_heighbours_indexes)
+        dominated.update(white_neighbours_indexes)
         dominated.remove(max_index)
 
 
 def greedy_prune(adjacency_matrix, roles):
     for i in range(1, len(roles)):
-        if not roles[i]: continue
+        if not roles[i]:
+            continue
 
         # check if all grey neighbours have black neighbours
         suspicious = True
@@ -58,7 +60,8 @@ def greedy_prune(adjacency_matrix, roles):
                 suspicious = False
                 break
 
-        if not suspicious: continue
+        if not suspicious:
+            continue
 
         # check if after removing node the dominating set still be connected
         black_neighbours = [n_i for n_i in neighbours if roles[n_i]]
@@ -67,7 +70,8 @@ def greedy_prune(adjacency_matrix, roles):
                 suspicious = False
                 break
 
-        if suspicious: roles[i] = 0
+        if suspicious:
+            roles[i] = 0
 
 
 # --- Helper function ---
@@ -106,9 +110,9 @@ def has_path_to_node(current_node, start_node, end_node, adjacency_matrix, roles
             return True
 
         #  Else, continue to do BFS
-        for i in adjacency_matrix[n_i]:
+        for i, is_adjacent in enumerate(adjacency_matrix[n_i]):
             # add only relay nodes and pass current_node
-            if i and roles[i] and i != current_node and not visited[i]:
+            if is_adjacent and roles[i] and i != current_node and not visited[i]:
                 queue.append(i)
                 visited[i] = True
 
@@ -126,7 +130,7 @@ def has_path_to_nodes(current_node, start_node, end_nodes, adjacency_matrix, rol
 
 # --- Testing functions ---
 
-def show_graph_with_labels(adjacency, roles, positions, only_relays=False, save_to=None):
+def show_graph_with_labels(adjacency, roles, positions=None, only_relays=False, save_to=None):
     rows, cols = np.where(adjacency == 1)
     edges = list(zip(rows.tolist(), cols.tolist()))
     gr = nx.Graph()
@@ -164,6 +168,7 @@ def show_graph_with_labels(adjacency, roles, positions, only_relays=False, save_
     else:
         plt.show()
 
+
 def test_greedy_construct():
     roles = np.zeros((len(adjacency_matrix),), dtype='i8')
     greedy_construct(adjacency_matrix, roles)
@@ -176,6 +181,7 @@ def test_greedy_construct():
 
 def test_greedy_prune():
     roles = [0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1]
+    show_graph_with_labels(adjacency_matrix, roles)
     greedy_prune(adjacency_matrix, roles)
     np.testing.assert_array_equal(
         #    0  1  2  3  4  5  6  7  8  9 10 11 12
